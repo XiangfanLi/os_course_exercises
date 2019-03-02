@@ -96,12 +96,34 @@ SETGATE(intr, 1,2,3,0);
 #### 练习一
 
 1. 请在ucore中找一段你认为难度适当的AT&T格式X86汇编代码，尝试解释其含义。
+  以下是 boot/bootasm.S 中的一段汇编代码
+  ```
+    lgdt gdtdesc
+    movl %cr0, %eax
+    orl $CR0_PE_ON, %eax
+    movl %eax, %cr0
+  ```
+  这段代码的作用是加载全局描述符表, 并将系统控制寄存器cr0的最低位置为1，代表系统由实模式进入保护模式。
+  lgdt gdtdesc 指令会将gdtdesc的内容加载到GDTR中
+  在同一文件中可找到gdtdesc的内容:
+  ```
+   gdt:
+    SEG_NULLASM                                     # null seg
+    SEG_ASM(STA_X|STA_R, 0x0, 0xffffffff)           # code seg for bootloader and kernel
+    SEG_ASM(STA_W, 0x0, 0xffffffff)                 # data seg for bootloader and kernel
+
+   gdtdesc:
+    .word 0x17                                      # sizeof(gdt) - 1
+    .long gdt                                       # address gdt
+  ```
+  可以看到，gdtdesc的前两个字节为0x17，表示gdt的限长（共24个字节），后32个字节表示gdt的基址，该基址处24个字节的内容即为全局描述符表。
 
 2. (option)请在rcore中找一段你认为难度适当的RV汇编代码，尝试解释其含义。
 
 #### 练习二
 
 宏定义和引用在内核代码中很常用。请枚举ucore或rcore中宏定义的用途，并举例描述其含义。
+
 
 #### reference
  - [Intel格式和AT&T格式汇编区别](http://www.cnblogs.com/hdk1993/p/4820353.html)

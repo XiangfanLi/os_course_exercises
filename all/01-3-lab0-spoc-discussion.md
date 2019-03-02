@@ -123,6 +123,23 @@ SETGATE(intr, 1,2,3,0);
 #### 练习二
 
 宏定义和引用在内核代码中很常用。请枚举ucore或rcore中宏定义的用途，并举例描述其含义。
+boot/bootmain.c中有如下的宏定义:
+```
+#define SEG_ASM(type,base,lim)                                  \
+    .word (((lim) >> 12) & 0xffff), ((base) & 0xffff);          \
+    .byte (((base) >> 16) & 0xff), (0x90 | (type)),             \
+        (0xC0 | (((lim) >> 28) & 0xf)), (((base) >> 24) & 0xff)
+```
+该宏定义的作用是根据type(段的类型)、base(段的基址)、lim(段的限长)生成一个64位的段描述符
+使用举例:
+boot/bootasm.S中有如下汇编代码:
+```
+gdt:
+    SEG_NULLASM                                     # null seg
+    SEG_ASM(STA_X|STA_R, 0x0, 0xffffffff)           # code seg for bootloader and kernel
+    SEG_ASM(STA_W, 0x0, 0xffffffff)                 # data seg for bootloader and kernel
+```
+刚进入保护模式时，gdt被初始化为24字节大小，其中依次为一个空的段描述符，一个描述大小为4GB、可读可执行的代码段的段描述符，一个描述大小为4GB、可写不可执行的代码段的段描述符
 
 
 #### reference

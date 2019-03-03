@@ -139,7 +139,7 @@ gdt:
     SEG_ASM(STA_X|STA_R, 0x0, 0xffffffff)           # code seg for bootloader and kernel
     SEG_ASM(STA_W, 0x0, 0xffffffff)                 # data seg for bootloader and kernel
 ```
-刚进入保护模式时，gdt被初始化为24字节大小，其中依次为一个空的段描述符，一个描述大小为4GB、可读可执行的代码段的段描述符，一个描述大小为4GB、可写不可执行的代码段的段描述符
+刚进入保护模式时，gdt被初始化为24字节大小，其中依次为一个空的段描述符，一个描述大小为4GB、可读可执行的代码段的段描述符，一个描述大小为4GB、可写不可执行的数据段的段描述符
 
 
 #### reference

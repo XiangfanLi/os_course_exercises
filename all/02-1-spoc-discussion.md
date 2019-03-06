@@ -36,6 +36,11 @@
            * 传统的BIOS启动由于MBR的限制，默认是无法引导超过2.1TB以上的硬盘的。随着硬盘价格的不断走低，2.1TB以上的硬盘会逐渐普及，因此UEFI启动也是今后主流的启动方式。
 
 - 理解rcore中的Berkeley BootLoader (BBL)的功能。
+    * 在rcore中至于RISCV，参考ucore的做法使用Berkeley bootloader(BBL)，作为M态运行环境，而Kernel运行在S态。Berkeley BootLoader的作用是:
+        * 打开A20地址线，设置CR0,切换到保护模式，启用分段机制
+        * 读磁盘中ELF执行文件格式的rcore操作系统到内存
+        * 显示字符串信息
+        * 把控制权交给rcore操作系统
 
 ## 3.2 系统启动流程
 
